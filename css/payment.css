@@ -1,0 +1,150 @@
+/* Google Font */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(135deg,#0d6efd,#0046c0);
+    padding:20px;
+}
+
+.container{
+    width:100%;
+    max-width:420px;
+}
+
+.payment-card{
+    background:#fff;
+    border-radius:20px;
+    padding:30px 25px;
+    text-align:center;
+    box-shadow:0 15px 35px rgba(0,0,0,.2);
+    animation:fadeIn .5s ease;
+}
+
+.icon{
+    width:80px;
+    height:80px;
+    margin:0 auto 20px;
+    border-radius:50%;
+    background:#0d6efd;
+    color:#fff;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:35px;
+}
+
+.payment-card h2{
+    color:#0d6efd;
+    margin-bottom:20px;
+}
+
+.summary{
+    background:#f5f7fb;
+    border-radius:15px;
+    padding:20px;
+    margin-bottom:20px;
+}
+
+.summary p{
+    color:#666;
+    font-size:14px;
+}
+
+.summary h3{
+    margin:8px 0 15px;
+    color:#222;
+}
+
+.summary h1{
+    color:#0d6efd;
+    font-size:36px;
+}
+
+input{
+    width:100%;
+    height:52px;
+    border:2px solid #ddd;
+    border-radius:12px;
+    padding:0 15px;
+    font-size:16px;
+    outline:none;
+    margin-bottom:20px;
+    transition:.3s;
+}
+
+input:focus{
+    border-color:#0d6efd;
+}
+
+button{
+    width:100%;
+    height:52px;
+    border:none;
+    border-radius:12px;
+    background:#0d6efd;
+    color:#fff;
+    font-size:17px;
+    font-weight:600;
+    cursor:pointer;
+    transition:.3s;
+}
+
+button:hover{
+    background:#0046c0;
+}
+
+button:active{
+    transform:scale(.98);
+}
+
+#status{
+    margin-top:20px;
+    font-size:15px;
+    font-weight:600;
+    color:#0d6efd;
+    min-height:25px;
+    word-wrap:break-word;
+}
+
+@keyframes fadeIn{
+
+    from{
+        opacity:0;
+        transform:translateY(20px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+
+}
+
+@media(max-width:480px){
+
+    .payment-card{
+        padding:25px 20px;
+    }
+
+    .summary h1{
+        font-size:30px;
+    }
+
+    .icon{
+        width:70px;
+        height:70px;
+        font-size:30px;
+    }
+
+}
