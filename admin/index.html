@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>PrimeVest Admin Dashboard</title>
+
+<link rel="stylesheet" href="css/admin.css">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+</head>
+
+<body>
+
+<!-- Sidebar -->
+
+<div class="sidebar">
+
+<div class="logo">
+
+<i class="fas fa-chart-line"></i>
+
+<h2>PrimeVest</h2>
+
+<p>Admin Panel</p>
+
+</div>
+
+<ul>
+
+<li class="active">
+<i class="fas fa-home"></i>
+Dashboard
+</li>
+
+<li>
+<i class="fas fa-users"></i>
+Users
+</li>
+
+<li>
+<i class="fas fa-wallet"></i>
+Investments
+</li>
+
+<li>
+<i class="fas fa-money-bill-wave"></i>
+Withdrawals
+</li>
+
+<li>
+<i class="fas fa-credit-card"></i>
+Recharges
+</li>
+
+<li>
+<i class="fas fa-cog"></i>
+Settings
+</li>
+
+</ul>
+
+</div>
+
+<!-- Main Content -->
+
+<div class="main">
+
+<header>
+
+<h1>Admin Dashboard</h1>
+
+<button id="logoutBtn">
+Logout
+</button>
+
+</header>
+
+<!-- Dashboard Cards -->
+
+<div class="cards">
+
+<div class="card">
+
+<i class="fas fa-users"></i>
+
+<h2 id="totalUsers">0</h2>
+
+<p>Total Users</p>
+
+</div>
+
+<div class="card">
+
+<i class="fas fa-wallet"></i>
+
+<h2 id="totalInvestment">KSh 0</h2>
+
+<p>Total Investments</p>
+
+</div>
+
+<div class="card">
+
+<i class="fas fa-credit-card"></i>
+
+<h2 id="totalRecharge">KSh 0</h2>
+
+<p>Total Recharge</p>
+
+</div>
+
+<div class="card">
+
+<i class="fas fa-money-bill-wave"></i>
+
+<h2 id="totalWithdraw">KSh 0</h2>
+
+<p>Total Withdrawals</p>
+
+</div>
+
+</div>
+
+<!-- Recent Users -->
+
+<div class="table-box">
+
+<h2>Registered Users</h2>
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Username</th>
+
+<th>Phone</th>
+
+<th>Balance</th>
+
+<th>Investment</th>
+
+</tr>
+
+</thead>
+
+<tbody id="usersTable">
+
+<tr>
+
+<td colspan="4">
+No users found
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+<script src="js/admin.js"></script>
+
+</body>
+
+</html>
