@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>PrimeVest Profile</title>
+
+<link rel="stylesheet" href="css/profile.css">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+</head>
+
+<body>
+
+<header>
+
+<h2>My Profile</h2>
+
+</header>
+
+<div class="profile-card">
+
+<div class="avatar">
+<i class="fas fa-user"></i>
+</div>
+
+<h2 id="username"></h2>
+
+<p id="phone"></p>
+
+</div>
+
+<div class="stats">
+
+<div class="stat">
+<h3>Wallet Balance</h3>
+<p id="balance">KSh 0</p>
+</div>
+
+<div class="stat">
+<h3>Total Investment</h3>
+<p id="investment">KSh 0</p>
+</div>
+
+<div class="stat">
+<h3>Total Earnings</h3>
+<p id="earnings">KSh 0</p>
+</div>
+
+<div class="stat">
+<h3>Total Withdrawn</h3>
+<p id="withdrawn">KSh 0</p>
+</div>
+
+</div>
+
+<div class="referral-card">
+
+<h3>Your Invitation Code</h3>
+
+<input
+type="text"
+id="referralCode"
+readonly>
+
+<button id="copyCode">
+Copy Invitation Code
+</button>
+
+<br><br>
+
+<h3>Your Referral Link</h3>
+
+<input
+type="text"
+id="referralLink"
+readonly>
+
+<button id="copyLink">
+Copy Referral Link
+</button>
+
+</div>
+
+<div class="menu">
+
+<button onclick="location.href='receive.html'">
+<i class="fas fa-gift"></i>
+Receive Earnings
+</button>
+
+<button onclick="location.href='recharge.html'">
+<i class="fas fa-plus-circle"></i>
+Recharge
+</button>
+
+<button onclick="location.href='withdraw.html'">
+<i class="fas fa-wallet"></i>
+Withdraw
+</button>
+
+<button onclick="location.href='settings.html'">
+<i class="fas fa-cog"></i>
+Account Settings
+</button>
+
+<button onclick="location.href='support.html'">
+<i class="fas fa-headset"></i>
+Contact Support
+</button>
+
+<button onclick="logout()">
+<i class="fas fa-sign-out-alt"></i>
+Logout
+</button>
+
+</div>
+
+<nav>
+
+<a href="home.html">
+<i class="fas fa-home"></i>
+<span>Home</span>
+</a>
+
+<a href="profile.html" class="active">
+<i class="fas fa-user"></i>
+<span>Profile</span>
+</a>
+
+</nav>
+
+<script src="js/profile.js"></script>
+
+</body>
+
+</html>
