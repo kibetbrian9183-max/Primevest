@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Withdraw</title>
+
+<link rel="stylesheet" href="css/withdraw.css">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+</head>
+
+<body>
+
+<header>
+<h2>Withdraw Funds</h2>
+</header>
+
+<div class="card">
+
+<h3>Available Balance</h3>
+
+<h1 id="balance">
+KSh 0
+</h1>
+
+<select id="method">
+
+<option value="M-Pesa">M-Pesa</option>
+
+<option value="Airtel Money">Airtel Money</option>
+
+</select>
+
+<input
+type="tel"
+id="account"
+placeholder="Enter M-Pesa/Airtel Number">
+
+<input
+type="number"
+id="amount"
+placeholder="Enter Amount">
+
+<button id="withdrawBtn">
+Withdraw Now
+</button>
+
+<p id="status"></p>
+
+</div>
+
+<div class="history">
+
+<h2>Withdrawal History</h2>
+
+<div id="historyList">
+
+<p>No withdrawals yet.</p>
+
+</div>
+
+</div>
+
+<nav>
+
+<a href="home.html">
+<i class="fas fa-home"></i>
+<span>Home</span>
+</a>
+
+<a href="profile.html">
+<i class="fas fa-user"></i>
+<span>Profile</span>
+</a>
+
+</nav>
+
+<script src="js/withdraw.js"></script>
+
+</body>
+
+</html>
