@@ -1,0 +1,220 @@
+/* Google Font */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    background:#f5f7fb;
+    color:#222;
+    padding-bottom:90px;
+}
+
+/* HEADER */
+
+header{
+    background:linear-gradient(135deg,#0d6efd,#0046c0);
+    color:#fff;
+    text-align:center;
+    padding:20px;
+    border-radius:0 0 25px 25px;
+}
+
+header h2{
+    font-size:24px;
+    font-weight:600;
+}
+
+/* PROFILE CARD */
+
+.profile-card{
+    background:#fff;
+    width:92%;
+    max-width:450px;
+    margin:20px auto;
+    padding:25px;
+    border-radius:20px;
+    text-align:center;
+    box-shadow:0 8px 25px rgba(0,0,0,.08);
+}
+
+.avatar{
+    width:90px;
+    height:90px;
+    margin:auto;
+    border-radius:50%;
+    background:#0d6efd;
+    color:#fff;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:40px;
+    margin-bottom:15px;
+}
+
+.profile-card h2{
+    color:#0d6efd;
+    margin-bottom:8px;
+}
+
+.profile-card p{
+    color:#666;
+}
+
+/* STATS */
+
+.stats{
+    width:92%;
+    max-width:450px;
+    margin:auto;
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:15px;
+}
+
+.stat{
+    background:#fff;
+    padding:18px;
+    border-radius:15px;
+    text-align:center;
+    box-shadow:0 5px 15px rgba(0,0,0,.08);
+}
+
+.stat h3{
+    font-size:14px;
+    color:#666;
+    margin-bottom:8px;
+}
+
+.stat p{
+    font-size:20px;
+    font-weight:700;
+    color:#0d6efd;
+}
+
+/* REFERRAL */
+
+.referral-card{
+    width:92%;
+    max-width:450px;
+    margin:20px auto;
+    background:#fff;
+    border-radius:20px;
+    padding:20px;
+    box-shadow:0 5px 15px rgba(0,0,0,.08);
+}
+
+.referral-card h3{
+    margin-bottom:10px;
+    color:#0d6efd;
+}
+
+.referral-card input{
+    width:100%;
+    height:48px;
+    border:2px solid #ddd;
+    border-radius:10px;
+    padding:0 12px;
+    margin-bottom:10px;
+    outline:none;
+}
+
+.referral-card button{
+    width:100%;
+    height:45px;
+    border:none;
+    border-radius:10px;
+    background:#0d6efd;
+    color:#fff;
+    font-size:15px;
+    font-weight:600;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.referral-card button:hover{
+    background:#0046c0;
+}
+
+/* MENU */
+
+.menu{
+    width:92%;
+    max-width:450px;
+    margin:auto;
+}
+
+.menu button{
+    width:100%;
+    border:none;
+    background:#fff;
+    margin-bottom:12px;
+    padding:16px;
+    border-radius:15px;
+    text-align:left;
+    font-size:16px;
+    cursor:pointer;
+    box-shadow:0 5px 15px rgba(0,0,0,.08);
+    transition:.3s;
+}
+
+.menu button:hover{
+    background:#eef5ff;
+}
+
+.menu i{
+    width:30px;
+    color:#0d6efd;
+}
+
+/* BOTTOM NAVIGATION */
+
+nav{
+    position:fixed;
+    bottom:0;
+    left:0;
+    width:100%;
+    background:#fff;
+    display:flex;
+    justify-content:space-around;
+    padding:12px 0;
+    box-shadow:0 -2px 15px rgba(0,0,0,.1);
+}
+
+nav a{
+    text-decoration:none;
+    color:#666;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    font-size:13px;
+}
+
+nav a i{
+    font-size:22px;
+    margin-bottom:5px;
+}
+
+nav a.active{
+    color:#0d6efd;
+}
+
+/* MOBILE */
+
+@media(max-width:480px){
+
+    .stats{
+        grid-template-columns:1fr;
+    }
+
+    .profile-card,
+    .referral-card,
+    .menu{
+        width:95%;
+    }
+
+}
