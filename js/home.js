@@ -2,75 +2,75 @@
 // PRIMEVEST HOME
 // ===============================
 
-const API_BASE_URL = "https://fuliza-backend-xgsm.onrender.com";
+// Redirect if not logged in
+let currentUser = JSON.parse(localStorage.getItem("currentUser"));
 
-// localStorage here is session context only (which user is logged in on
-// this device) — the balance itself now comes from the database.
-const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-
-if (!currentUser || !currentUser.phone) {
+if (!currentUser) {
     window.location.href = "index.html";
 }
 
-const welcomeUser = document.getElementById("welcomeUser");
-const balanceEl = document.getElementById("balance");
-const receiveBtn = document.getElementById("receiveBtn");
-const rechargeBtn = document.getElementById("rechargeBtn");
-const withdrawBtn = document.getElementById("withdrawBtn");
+// Display user information
+document.getElementById("welcomeUser").innerHTML =
+    "Hi, " + currentUser.username;
 
-welcomeUser.innerHTML = "Welcome, " + (currentUser.name || currentUser.phone);
+document.getElementById("balance").innerHTML =
+    "KSh " + currentUser.balance.toLocaleString();
 
-// ===============================
-// LOAD REAL BALANCE FROM THE DATABASE
-// ===============================
+// =====================================
+// INVESTMENT PRODUCTS
+// =====================================
 
-async function loadBalance() {
-    try {
-        const response = await fetch(
-            `${API_BASE_URL}/api/user/${currentUser.phone}`
-        );
+const products = [
 
-        if (!response.ok) {
-            throw new Error("Failed to fetch user balance");
-        }
+    {
+        name: "Starter Plan",
+        invest: 500,
+        daily: 50,
+        duration: 30
+    },
 
-        const user = await response.json();
+    {
+        name: "Silver Plan",
+        invest: 1000,
+        daily: 110,
+        duration: 30
+    },
 
-        balanceEl.innerHTML = "KSh " + Number(user.balance || 0).toLocaleString();
+    {
+        name: "Gold Plan",
+        invest: 3000,
+        daily: 360,
+        duration: 30
+    },
 
-        // Keep a light local cache for instant display on next page load,
-        // but this is a cache, not the source of truth.
-        localStorage.setItem("cachedBalance", JSON.stringify(user));
+    {
+        name: "Diamond Plan",
+        invest: 5000,
+        daily: 650,
+        duration: 30
+    },
 
-    } catch (error) {
-        console.log(error);
-
-        // Fall back to last known cached value if the request fails,
-        // rather than showing nothing.
-        const cached = JSON.parse(localStorage.getItem("cachedBalance"));
-        if (cached) {
-            balanceEl.innerHTML = "KSh " + Number(cached.balance || 0).toLocaleString();
-        }
+    {
+        name: "VIP Plan",
+        invest: 10000,
+        daily: 1400,
+        duration: 30
     }
-}
 
-loadBalance();
+];
 
-// ===============================
-// NAV BUTTONS
-// ===============================
+const productList = document.getElementById("productList");
 
-receiveBtn.addEventListener("click", () => {
-    window.location.href = "receive.html";
-});
+products.forEach(product => {
 
-rechargeBtn.addEventListener("click", () => {
-    window.location.href = "recharge.html";
-});
+    const card = document.createElement("div");
 
-withdrawBtn.addEventListener("click", () => {
-    window.location.href = "withdraw.html";
-});
+    card.className = "product-card";
+
+    card.innerHTML = `
+
+        <h3>${product.name}</h3>
+
         <p><strong>Investment:</strong> KSh ${product.invest}</p>
 
         <p><strong>Daily Income:</strong> KSh ${product.daily}</p>
