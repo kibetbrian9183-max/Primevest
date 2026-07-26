@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>PrimeVest - Account Settings</title>
+
+<link rel="stylesheet" href="settings.css">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="header">
+<h2>Account Settings</h2>
+<p>Manage your account information</p>
+</div>
+
+<form id="settingsForm">
+
+<div class="input-box">
+<label>Username</label>
+<input type="text" id="username">
+</div>
+
+<div class="input-box">
+<label>Email Address</label>
+<input type="email" id="email">
+</div>
+
+<div class="input-box">
+<label>M-Pesa Number</label>
+<input type="tel" id="phone">
+</div>
+
+<div class="input-box">
+<label>Current Password</label>
+<input type="password" id="currentPassword">
+</div>
+
+<div class="input-box">
+<label>New Password</label>
+<input type="password" id="newPassword">
+</div>
+
+<div class="input-box">
+<label>Confirm Password</label>
+<input type="password" id="confirmPassword">
+</div>
+
+<button type="submit" class="save-btn">
+<i class="fa-solid fa-floppy-disk"></i>
+Save Changes
+</button>
+
+</form>
+
+<a href="profile.html" class="back-btn">
+<i class="fa-solid fa-arrow-left"></i>
+Back to Profile
+</a>
+
+</div>
+
+<script src="settings.js"></script>
+
+</body>
+</html>
