@@ -35,7 +35,7 @@ document.getElementById("referralCode").value =
     currentUser.referralCode;
 
 // Change this to your deployed website URL
-const WEBSITE_URL = "https://primevest.vercel.app";
+const WEBSITE_URL = "https://primevest-kohl.vercel.app";
 
 document.getElementById("referralLink").value =
     WEBSITE_URL + "/register.html?ref=" + currentUser.referralCode;
