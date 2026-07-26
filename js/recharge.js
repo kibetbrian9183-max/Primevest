@@ -4,9 +4,11 @@
 
 const API_BASE_URL = "https://fuliza-backend-xgsm.onrender.com";
 
-let currentUser = JSON.parse(localStorage.getItem("currentUser"));
+// localStorage is session context only (which phone this device is logged
+// in as) — balance and history now come from the database.
+const currentUser = JSON.parse(localStorage.getItem("currentUser"));
 
-if (!currentUser) {
+if (!currentUser || !currentUser.phone) {
     window.location.href = "index.html";
 }
 
@@ -17,48 +19,63 @@ const payBtn = document.getElementById("payBtn");
 const status = document.getElementById("status");
 const historyList = document.getElementById("historyList");
 
-// ===============================
-// SHOW BALANCE
-// ===============================
-
-balance.innerHTML =
-    "KSh " + (currentUser.balance || 0).toLocaleString();
-
 phone.value = currentUser.phone;
 
 // ===============================
-// LOAD HISTORY
+// LOAD REAL BALANCE FROM THE DATABASE
 // ===============================
 
-loadHistory();
+async function loadBalance() {
+    try {
+        const response = await fetch(
+            `${API_BASE_URL}/api/user/${currentUser.phone}`
+        );
+        const user = await response.json();
+        balance.innerHTML = "KSh " + Number(user.balance || 0).toLocaleString();
+    } catch (error) {
+        console.log(error);
+    }
+}
 
-function loadHistory() {
+// ===============================
+// LOAD REAL RECHARGE HISTORY FROM THE DATABASE
+// ===============================
+
+async function loadHistory() {
 
     historyList.innerHTML = "";
 
-    if (
-        !currentUser.rechargeHistory ||
-        currentUser.rechargeHistory.length === 0
-    ) {
+    try {
 
-        historyList.innerHTML = "<p>No recharge history.</p>";
-        return;
+        const response = await fetch(
+            `${API_BASE_URL}/api/recharge-history?phone=${currentUser.phone}`
+        );
+        const history = await response.json();
 
+        if (!history || history.length === 0) {
+            historyList.innerHTML = "<p>No recharge history.</p>";
+            return;
+        }
+
+        history.forEach(item => {
+            historyList.innerHTML += `
+            <div class="history-item">
+                <h3>KSh ${Number(item.amount).toLocaleString()}</h3>
+                <p><strong>Status:</strong> ${item.status}</p>
+                <p><strong>Date:</strong> ${new Date(item.createdAt).toLocaleString()}</p>
+            </div>
+            `;
+        });
+
+    } catch (error) {
+        historyList.innerHTML = "<p>Unable to load recharge history.</p>";
+        console.log(error);
     }
 
-    currentUser.rechargeHistory.forEach(item => {
-
-        historyList.innerHTML += `
-        <div class="history-item">
-            <h3>KSh ${Number(item.amount).toLocaleString()}</h3>
-            <p><strong>Receipt:</strong> ${item.receipt}</p>
-            <p><strong>Date:</strong> ${item.date}</p>
-        </div>
-        `;
-
-    });
-
 }
+
+loadBalance();
+loadHistory();
 
 // ===============================
 // PAY
@@ -71,6 +88,176 @@ payBtn.onclick = async function () {
 
     if (!/^254(7|1)\d{8}$/.test(phoneNumber)) {
 
+        status.style.color = "red";
+        status.innerHTML = "Enter a valid Safaricom number.";
+        return;
+
+    }
+
+    if (rechargeAmount < 1) {
+
+        status.style.color = "red";
+        status.innerHTML = "Enter a valid amount.";
+        return;
+
+    }
+
+    payBtn.disabled = true;
+
+    status.style.color = "#0d6efd";
+    status.innerHTML = "Sending STK Push...";
+
+    try {
+
+        const response = await fetch(
+            `${API_BASE_URL}/api/mpesa/stkpush`,
+            {
+
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+
+                    phone: phoneNumber,
+
+                    amount: rechargeAmount,
+
+                    // Tells the backend this is a wallet top-up, not an
+                    // investment, so the callback credits balance only.
+                    purpose: "recharge",
+
+                    accountReference: "PrimeVest",
+
+                    transactionDesc: "Wallet Recharge"
+
+                })
+
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+
+            status.style.color = "red";
+            status.innerHTML =
+                data.error || "STK Push failed.";
+
+            payBtn.disabled = false;
+
+            return;
+
+        }
+
+        const checkoutId =
+            data.checkoutRequestId ||
+            data.CheckoutRequestID;
+
+        status.innerHTML =
+            "STK Push sent. Complete payment on your phone.";
+
+        pollPayment(checkoutId);
+
+    }
+
+    catch (error) {
+
+        status.style.color = "red";
+        status.innerHTML = "Cannot connect to payment server.";
+        payBtn.disabled = false;
+
+    }
+
+};
+
+// ===============================
+// CHECK PAYMENT AGAINST THE DATABASE
+// ===============================
+
+function pollPayment(checkoutId) {
+
+    let attempts = 0;
+
+    const timer = setInterval(async () => {
+
+        attempts++;
+
+        if (attempts > 20) {
+
+            clearInterval(timer);
+
+            status.style.color = "red";
+            status.innerHTML = "Verification timed out.";
+            payBtn.disabled = false;
+
+            return;
+
+        }
+
+        try {
+
+            const response = await fetch(
+                `${API_BASE_URL}/api/mpesa/status/${checkoutId}`
+            );
+
+            const data = await response.json();
+
+            if (data.status === "pending") {
+                return;
+            }
+
+            clearInterval(timer);
+
+            if (data.status === "success") {
+                onRechargeConfirmed(data);
+            } else {
+                status.style.color = "red";
+                status.innerHTML =
+                    data.failureReason || "Payment Failed.";
+                payBtn.disabled = false;
+            }
+
+        }
+
+        catch (error) {
+
+            clearInterval(timer);
+
+            status.style.color = "red";
+            status.innerHTML =
+                "Unable to verify payment.";
+            payBtn.disabled = false;
+
+        }
+
+    }, 3000);
+
+}
+
+// ===============================
+// REFRESH FROM THE DATABASE AFTER CONFIRMATION
+// ===============================
+// `investment` is the real Mongo record for this checkout. The balance
+// itself was already credited server-side in /api/mpesa/callback — here we
+// just re-fetch the up-to-date numbers rather than computing anything
+// ourselves.
+
+async function onRechargeConfirmed(investment) {
+
+    status.style.color = "green";
+    status.innerHTML =
+        `✅ Wallet recharged successfully. Receipt: ${investment.mpesaReceipt || "N/A"}`;
+
+    amount.value = "";
+    payBtn.disabled = false;
+
+    await loadBalance();
+    await loadHistory();
+
+}
         status.style.color = "red";
         status.innerHTML = "Enter a valid Safaricom number.";
         return;
