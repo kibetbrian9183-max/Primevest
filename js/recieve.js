@@ -2,14 +2,9 @@
 // PRIMEVEST RECEIVE EARNINGS
 // ===============================
 
-const API_BASE_URL = "https://fuliza-backend-xgsm.onrender.com";
+let currentUser = JSON.parse(localStorage.getItem("currentUser"));
 
-// localStorage is session context only (which phone this device is logged
-// in as) — earnings amounts, claim eligibility, and history are all
-// computed and enforced server-side now.
-const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-
-if (!currentUser || !currentUser.phone) {
+if (!currentUser) {
     window.location.href = "index.html";
 }
 
@@ -18,133 +13,64 @@ const countdown = document.getElementById("countdown");
 const claimBtn = document.getElementById("claimBtn");
 const historyList = document.getElementById("historyList");
 
-claimBtn.disabled = true;
-
-let nextClaimTime = 0;
-
 // ===============================
-// LOAD REAL EARNINGS STATE FROM THE SERVER
+// CALCULATE DAILY EARNING
 // ===============================
 
-async function loadEarningsState() {
-    try {
-        const response = await fetch(
-            `${API_BASE_URL}/api/earnings/${currentUser.phone}`
-        );
-        const data = await response.json();
+let todayEarning = 0;
 
-        earningAmount.innerHTML = "KSh " + Number(data.todayEarning || 0).toLocaleString();
-        nextClaimTime = data.nextClaimTime || 0;
-        claimBtn.disabled = !data.canClaim;
+if (currentUser.products) {
 
-    } catch (error) {
-        console.log(error);
-        countdown.innerHTML = "Unable to load earnings.";
-    }
+    currentUser.products.forEach(product => {
+
+        todayEarning += Number(product.daily);
+
+    });
+
 }
 
+earningAmount.innerHTML =
+    "KSh " + todayEarning.toLocaleString();
+
 // ===============================
-// COUNTDOWN DISPLAY (server decides canClaim; this just displays the timer)
+// CHECK 24 HOURS
 // ===============================
 
-function renderCountdown() {
+let lastClaim = currentUser.lastClaimTime || 0;
+
+function checkClaimTime() {
 
     const now = Date.now();
 
-    if (now >= nextClaimTime) {
+    const nextClaim = lastClaim + (24 * 60 * 60 * 1000);
+
+    if (now >= nextClaim) {
+
         countdown.innerHTML = "Ready to Claim";
-        // Don't flip claimBtn.disabled here based on the clock alone —
-        // loadEarningsState() re-confirms with the server before enabling it.
+
+        claimBtn.disabled = false;
+
     } else {
-        const remaining = nextClaimTime - now;
+
+        const remaining = nextClaim - now;
+
         const hours = Math.floor(remaining / 3600000);
         const minutes = Math.floor((remaining % 3600000) / 60000);
-        countdown.innerHTML = `Next claim in ${hours}h ${minutes}m`;
+
+        countdown.innerHTML =
+            `Next claim in ${hours}h ${minutes}m`;
+
         claimBtn.disabled = true;
+
     }
 
 }
 
-setInterval(renderCountdown, 60000);
+checkClaimTime();
+
+setInterval(checkClaimTime, 60000);
 
 // ===============================
-// LOAD REAL EARNINGS HISTORY FROM THE DATABASE
-// ===============================
-
-async function loadHistory() {
-
-    historyList.innerHTML = "";
-
-    try {
-        const response = await fetch(
-            `${API_BASE_URL}/api/earnings-history?phone=${currentUser.phone}`
-        );
-        const history = await response.json();
-
-        if (!history || history.length === 0) {
-            historyList.innerHTML = "<p>No earnings claimed yet.</p>";
-            return;
-        }
-
-        history.forEach(item => {
-            historyList.innerHTML += `
-            <div class="history-item">
-                <h3>+ KSh ${Number(item.amount).toLocaleString()}</h3>
-                <p>${new Date(item.claimedAt).toLocaleString()}</p>
-            </div>
-            `;
-        });
-
-    } catch (error) {
-        historyList.innerHTML = "<p>Unable to load earnings history.</p>";
-        console.log(error);
-    }
-
-}
-
-// ===============================
-// CLAIM EARNINGS — server verifies eligibility and amount, not the client
-// ===============================
-
-claimBtn.onclick = async function () {
-
-    claimBtn.disabled = true;
-
-    try {
-        const response = await fetch(`${API_BASE_URL}/api/claim`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ phone: currentUser.phone })
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            alert(data.error || "Could not claim earnings.");
-            await loadEarningsState();
-            return;
-        }
-
-        alert(`Daily earnings received: KSh ${Number(data.amount).toLocaleString()}`);
-
-        renderCountdown();
-        await loadEarningsState();
-        await loadHistory();
-
-    } catch (error) {
-        alert("Could not connect to the server. Try again.");
-        console.log(error);
-        await loadEarningsState();
-    }
-
-};
-
-// ===============================
-// INITIAL LOAD
-// ===============================
-
-loadEarningsState().then(renderCountdown);
-loadHistory();
 // CLAIM EARNINGS
 // ===============================
 
