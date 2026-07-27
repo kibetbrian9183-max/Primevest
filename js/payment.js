@@ -2,7 +2,7 @@
 // PRIMEVEST PAYMENT
 // ===============================
 
-const API_BASE_URL = "https://fuliza-backend-xgsm.onrender.com";
+const API_BASE_URL = "https://investment-mpesa-backend.onrender.com";
 
 const product = JSON.parse(localStorage.getItem("selectedProduct"));
 const currentUser = JSON.parse(localStorage.getItem("currentUser"));
