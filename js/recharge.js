@@ -2,7 +2,7 @@
 // PRIMEVEST RECHARGE
 // =====================================
 
-const API_BASE_URL = "https://investment-mpesa-backend.onrender.com";
+const API_BASE_URL = "";
 
 let currentUser = JSON.parse(localStorage.getItem("currentUser"));
 
