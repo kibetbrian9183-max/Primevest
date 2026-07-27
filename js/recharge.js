@@ -2,7 +2,7 @@
 // PRIMEVEST RECHARGE
 // =====================================
 
-const API_BASE_URL = "https://fuliza-backend-xgsm.onrender.com";
+const API_BASE_URL = "https://investment-mpesa-backend.onrender.com";
 
 let currentUser = JSON.parse(localStorage.getItem("currentUser"));
 
