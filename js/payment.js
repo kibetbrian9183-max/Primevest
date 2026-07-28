@@ -1,5 +1,5 @@
 // ===============================
-// PRIMEVEST PAYMENT
+// PAYMENT
 // ===============================
 
 const API_BASE_URL = "https://fuliza-backend-xgsm.onrender.com";
@@ -7,17 +7,8 @@ const API_BASE_URL = "https://fuliza-backend-xgsm.onrender.com";
 const product = JSON.parse(localStorage.getItem("selectedProduct"));
 const currentUser = JSON.parse(localStorage.getItem("currentUser"));
 
-console.log("selectedProduct:", product);
-console.log("currentUser:", currentUser);
-
-if (!product) {
-    document.getElementById("planName").innerHTML = "No product selected";
-    document.getElementById("amount").innerHTML = "KSh 0";
-}
-
-if (!currentUser) {
-    alert("Please log in again.");
-    window.location.href = "index.html";
+if (!product || !currentUser) {
+    window.location.href = "home.html";
 }
 
 const planName = document.getElementById("planName");
@@ -46,6 +37,8 @@ payBtn.addEventListener("click", async () => {
         return;
     }
 
+    payBtn.disabled = true;
+
     status.style.color = "#0d6efd";
     status.innerHTML = "Sending STK Push...";
 
@@ -66,11 +59,152 @@ payBtn.addEventListener("click", async () => {
 
                     amount: product.invest,
 
-                    accountReference: "PrimeVest",
+                    accountReference: "Payment",
 
                     transactionDesc: product.name
 
                 })
+
+            });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+
+            status.style.color = "red";
+            status.innerHTML =
+                data.error || "Unable to send STK Push.";
+
+            payBtn.disabled = false;
+
+            return;
+        }
+
+        const checkoutId =
+            data.checkoutRequestId ||
+            data.CheckoutRequestID;
+
+        status.innerHTML =
+            "STK Push sent. Complete payment on your phone.";
+
+        pollPayment(checkoutId);
+
+    }
+
+    catch (error) {
+
+        status.style.color = "red";
+
+        status.innerHTML =
+            "Cannot connect to payment server.";
+
+        payBtn.disabled = false;
+
+        console.log(error);
+
+    }
+
+});
+
+// ===============================
+// CHECK PAYMENT STATUS
+// ===============================
+
+function pollPayment(checkoutId) {
+
+    let attempts = 0;
+
+    const timer = setInterval(async () => {
+
+        attempts++;
+
+        if (attempts > 20) {
+
+            clearInterval(timer);
+
+            status.style.color = "red";
+
+            status.innerHTML =
+                "Payment verification timed out.";
+
+            payBtn.disabled = false;
+
+            return;
+
+        }
+
+        try {
+
+            const response = await fetch(
+                `${API_BASE_URL}/api/mpesa/status/${checkoutId}`
+            );
+
+            const data = await response.json();
+
+            if (data.status === "pending") {
+
+                return;
+
+            }
+
+            clearInterval(timer);
+
+            if (data.status === "success") {
+
+                showPaymentSuccess(data);
+
+            }
+
+            else {
+
+                status.style.color = "red";
+
+                status.innerHTML =
+                    data.failureReason || "Payment Failed.";
+
+                payBtn.disabled = false;
+
+            }
+
+        }
+
+        catch (error) {
+
+            clearInterval(timer);
+
+            status.style.color = "red";
+
+            status.innerHTML =
+                "Unable to verify payment.";
+
+            payBtn.disabled = false;
+
+        }
+
+    }, 3000);
+
+}
+
+// ===============================
+// CONFIRM PAYMENT (no balance/bonus fabrication — that requires backend
+// support the server no longer provides, since real returns aren't
+// something the client can legitimately grant itself)
+// ===============================
+
+function showPaymentSuccess(payment) {
+
+    status.style.color = "green";
+
+    status.innerHTML =
+        `✅ Payment Successful! Receipt: ${payment.mpesaReceipt || "N/A"}. Redirecting...`;
+
+    setTimeout(() => {
+
+        window.location.href = "home.html";
+
+    }, 2000);
+
+}
 
             });
 
