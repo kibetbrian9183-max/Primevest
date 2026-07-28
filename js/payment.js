@@ -7,7 +7,13 @@ const API_BASE_URL = "https://fuliza-backend-xgsm.onrender.com";
 const product = JSON.parse(localStorage.getItem("selectedProduct"));
 const currentUser = JSON.parse(localStorage.getItem("currentUser"));
 
-if (!product || !currentUser) {
+if (!currentUser) {
+    alert("Please log in again.");
+    window.location.href = "index.html";
+}
+
+if (!product) {
+    alert("No plan selected. Please choose a plan first.");
     window.location.href = "home.html";
 }
 
@@ -72,6 +78,17 @@ payBtn.addEventListener("click", async () => {
             status.style.color = "red";
             status.innerHTML =
                 data.error || "Unable to send STK Push.";
+
+        }
+
+    } catch (err) {
+
+        status.style.color = "red";
+        status.innerHTML = "Network error. Please try again.";
+
+    }
+
+});                data.error || "Unable to send STK Push.";
 
             return;
         }
